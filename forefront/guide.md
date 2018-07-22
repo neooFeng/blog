@@ -12,9 +12,10 @@
 * **HTML/CSS 布局**  
 个人觉得CSS布局是检验一个程序员是否有合理编码习惯的好方式，很多老人写的CSS依旧是凌乱不堪毫无章法，很难想象他们能写好后端代码。推荐学习：
   1. [布局技巧](http://zh.learnlayout.com/)
-  2. [bootstrap](http://v3.bootcss.com/)
-  3. [编码规范（@mdo）](http://codeguide.co/)、[编码规范（Google）](https://google.github.io/styleguide/htmlcssguide.html)  
-     （要求掌握知识点：盒模型、各种position的意义、float、fix等布局的优缺点）
+  2. [flex布局](http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html)
+  3. [bootstrap](http://v3.bootcss.com/)
+  4. [编码规范（@mdo）](http://codeguide.co/)、[编码规范（Google）](https://google.github.io/styleguide/htmlcssguide.html)  
+     （要求掌握知识点：盒模型、各种position的意义、flex布局、float、fix等布局的优缺点）
 
 * **JavaScript 精粹**  
 JavaScript是一门非常棒的语言，语法简单，使用灵活，它是一位[大神](http://www.ruanyifeng.com/blog/2011/06/birth_of_javascript.html)仅用了10天发明出来的语言，所以难免也有一些不尽人意的地方。[JavaScript The Right Way](http://jstherightway.org/zh-cn/)应该是全世界最好的学习JS的地方了，里面有太多的干货，千万不要错过里面的任何一句话。  
