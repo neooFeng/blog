@@ -1,4 +1,3 @@
 # Content
 
 forefront/guide.md
-
