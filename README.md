@@ -1,3 +1,0 @@
-# Content
-
-forefront/guide.md
