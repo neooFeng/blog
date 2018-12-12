@@ -242,6 +242,9 @@ public class ProductService {
 
 
 ## Ajax及SPA的出现（后端技术思想在前端的应用）
+ajax技术的诞生是前端发展的重要里程碑。  
+配合Google V8 JS引擎的问世，使得web页面可以仅靠JS调用http service完成所有页面的渲染工作。这便是SPA(Single Page Application)的概念，SPA的具体特征如下图：
+
 
 ## 前后端分离探索
 
