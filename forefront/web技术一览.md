@@ -45,9 +45,7 @@ public class HelloWorld extends HttpServlet {
         message = "Hello World";
     }
 
-    public void doGet(HttpServletRequest request,
-                        HttpServletResponse response)
-                throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
 
         PrintWriter out = response.getWriter();
@@ -102,16 +100,16 @@ HTML硬编码在java代码中，导致
 ``` Java
 // ProductServlet.java
 public class ProductServlet extends HttpServlet {
-	public void doGet(HttpServletRequest request, HttpServletResponse response){
- 
-		String name = request.getParam("name");
-		List<Product> products = ProductService.search(name);
+    public void doGet(HttpServletRequest request, HttpServletResponse response){
 
-		request.setAttribute("products", products);
+        String name = request.getParam("name");
+        List<Product> products = ProductService.search(name);
 
-		RequestDispatcher rd = getServletContext().getRequestDispatcher("/products.jsp");
-		rd.forward(request,response); 
-	}
+        request.setAttribute("products", products);
+
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/products.jsp");
+        rd.forward(request,response); 
+    }
 }
 ```
 ``` html
@@ -120,14 +118,14 @@ public class ProductServlet extends HttpServlet {
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
-	<body>
-		<c:forEach items="products" var="prod">
-			<div class="product">
-				<p>${prod.name}</p>
-		   		<p>${prod.price}</p>
-			</div>
-		</c:forEach>
-	</body>
+    <body>
+        <c:forEach items="products" var="prod">
+            <div class="product">
+                <p>${prod.name}</p>
+                <p>${prod.price}</p>
+            </div>
+        </c:forEach>
+    </body>
 </html>
 ```
 
@@ -140,7 +138,7 @@ public class ProductServlet extends HttpServlet {
             <p th:text="${prod.name}">苹果</p>
             <p th:text="${prod.price}">5.5元/斤</p>
         </div>
-	</body>
+    </body>
 </html>
 ```
 
@@ -163,9 +161,12 @@ public class ProductServlet extends HttpServlet {
 
 ## MVC
 MVC要实现的目标是**将软件用户界面(View)和业务逻辑(Model)分离**以使代码可扩展性、可复用性、可维护性、灵活性加强。  
-在软件开发领域，**“没有什么解耦问题是不能通过加一个抽象层解决的，如果有，那就加两层。”**  
+  
+那Controller扮演什么角色呢？在软件开发领域有一句俗话：**“没有什么解耦问题是不能通过加一个抽象层解决的，如果有，那就加两层。”**  
+  
 哈哈，这不是一句玩笑话，是真的这么回事，MVC再一次证明了这句话的正确性，Controller就是这样一个负责在Model和View中间斡旋的抽象层。  
-
+  
+  
 
 ### 框架关系图
 ![MVC](https://github.com/chinaoarq/blog/blob/dev/assets/mvc.png?raw=true)  
@@ -182,27 +183,27 @@ MVC要实现的目标是**将软件用户界面(View)和业务逻辑(Model)分�
 ``` Java
 // com.demo.controller.web.WebProductServlet.java
 public class WebProductServlet extends HttpServlet {
-	public void doGet(HttpServletRequest request, HttpServletResponse response){
+    public void doGet(HttpServletRequest request, HttpServletResponse response){
  
-		String name = request.getParam("name");
-		List<Product> products = ProductService.search(name);
+        String name = request.getParam("name");
+        List<Product> products = ProductService.search(name);
 
-		request.setAttribute("products", products);
+        request.setAttribute("products", products);
 
-		RequestDispatcher rd = getServletContext().getRequestDispatcher("/products.jsp");
-		rd.forward(request,response); 
-	}
+        RequestDispatcher rd = getServletContext().getRequestDispatcher("/products.jsp");
+        rd.forward(request,response); 
+    }
 }
 
 // com.demo.controller.app.ProductServlet.java
 public class AppProductServlet extends HttpServlet {
-	public void doGet(HttpServletRequest request, HttpServletResponse response){
+    public void doGet(HttpServletRequest request, HttpServletResponse response){
  
-		String name = request.getParam("name");
-		List<Product> products = ProductService.search(name);
+        String name = request.getParam("name");
+        List<Product> products = ProductService.search(name);
 
-		response.setAttribute('products', products.toJsonString());
-	}
+        response.setAttribute('products', products.toJsonString());
+    }
 }
 
 // Model 部分可以复用
