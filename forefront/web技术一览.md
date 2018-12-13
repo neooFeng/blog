@@ -242,10 +242,122 @@ public class ProductService {
 
 
 ## Ajax及SPA的出现（后端技术思想在前端的应用）
-ajax技术的诞生是前端发展的重要里程碑。  
-配合Google V8 JS引擎的问世，使得web页面可以仅靠JS调用http service完成所有页面的渲染工作。这便是SPA(Single Page Application)的概念，SPA的具体特征如下图：
+Ajax技术的诞生是前端发展的重要里程碑。  
+配合Google V8 JS引擎的问世，使得web页面可以仅靠JS调用http service完成所有页面的渲染工作。这便是SPA(Single Page Application)的概念，这里有[一个简单的SPA demo](https://github.com/chinaoarq/studio/tree/master/web%20common/spa_demo)。  
+
+### SSR和CSR
+Server Side Rendering(eg. Jsp) VS Client Side Rendering(eg. Js build DOM)  
+* SSR充分利用服务器计算能力，在弱客户端环境下具有一定优势
+* CSR无需编码人员具有server知识，开发部署都不需要与后端协作
+
+### Javascript Template Engines
+同Java Template Engines一样，目的相同，可以看做后端思想在前端的应用。常见模板举例：
+* Mustache
+* Handlebars
+* Underscore
+* jTemplates
+
+### 前端路由
+从上文的demo可以看出SPA其实只有初始加载的时候生成一个document，往后的页面变化都是利用ajax请求server数据然后利用JS动态渲染DOM实现的，这也是SPA能够提供沉浸式体验的重要原因。但现在有一个致命问题，在SPA中，从A页面跳到B页面时url不会变化。  
+但我们需要url跟随页面一起变化，就像传统网站那样。因为url不随页面变化的方式是很不友好的，会导致用户没有办法使用浏览器的‘前进’‘后退’‘刷新’，也不能把某一个页面保存为‘书签’。
+
+解决这个问题有一下两种方式：
+* [History API](https://developer.mozilla.org/en-US/docs/Web/API/History) HTHM5新特性，URL漂亮，但不是全部浏览器都支持，上文的demo采用的就是这种
+* [location.hash](https://developer.mozilla.org/en-US/docs/Web/Events/hashchange) URL不漂亮，但是支持的浏览器多，[网易云音乐](https://music.163.com/#/discover/toplist)就是这种
+
+
+### MVC/MVP/MVVM框架
+SPA的方式相当于把大量后端逻辑移到了前端，当前端逻辑变得复杂，便有人想到了已在其他领域应用多年的MVC。MVC的主要目的是分离视图与业务逻辑，使得代码结构清晰易维护，在上文已经讲过（我们的SPA demo中使用MVC模式实现了一个TODO List应用）。  
+
+就像Java后端有SpringMVC、Struts一样，前端也有很多MV*框架： 
+* VUE
+* React
+* Backbone.js
+* KnockoutJS
+* AngularJS
+* EmberJS
+
+如果想了解每个框架的特点，推荐一个很好的[框架对比网站](http://todomvc.com/) 。
+
+
+### SPA的优缺点
+* +局部刷新、增删改等场景下用户体验很好
+* +方便缓存、可以离线使用
+
+* -Not friendly to SEO
+* -首屏加载不够快
+* -单个页面Ajax太多时，手机环境下性能有瓶颈
+* -暴露接口增加网站不安全性
+* -完全的没有后端，不能做bigpipe等依赖服务器性能优化
+
+
+
+### 提问
+> SPA如何部署，需要注意哪些事项？  
+> Tip：静态文件缓存更新问题
+
 
 
 ## 前后端分离探索
 
+### 前后端代码结构图
+![图片没有加载出来](https://github.com/chinaoarq/blog/blob/dev/assets/struct.png?raw=true)
+[前后端协作方式的不断演变](https://github.com/lifesinger/blog/issues/184)
+
+### SPA式的分离
+* +对后端依赖最小，每个迭代只要api文档定好，就可以和后端同步开发
+* +可以独立部署，不依赖与后端代码
+* -SPA的弱点
+
+### 大前端式的分离（将SPA与传统方式结合）
+
+**Why?**
+1. SPA只能异步渲染，对SEO不友好
+> 所谓异步渲染就是ajax等方式得到html，从发送请求到得到html的过程中可以继续做其他事情；相对的同步渲染也就server直出html，即在请求页面时直接返回页面html。  
+> 异步渲染对SEO不够友好，因为搜索引擎爬虫不会等到动态内容渲染结束后再爬取网页。
+2. SPA对首屏加载的优化手段有限
+> 1. 必须等待JS加载完成后，再调用ajax获得页面需要的html，没有同步渲染快
+> 2. 无法使用bigpipe等服务器端优化手段
+3. SPA依赖客户端计算能力，对于弱客户端环境（手机浏览器、3G网络等）体验不好
+
+**What**
+把上图中的controller层也归到前端团队。  
+这不等于说放弃SPA，目前有[支持优雅降级的pjax](https://github.com/chinaoarq/studio/blob/master/web%20common/pjax.html)可以将SPA与传统方式结合，在高端浏览器上使用pushState+ajax，低端浏览器上自动使用传统方式。此外也可以自由设定某些页面不使用pjax，以加快首屏加载。  
+
+
+### 推荐学习
+* [淘宝：前后端分离的思考与实践](http://taobaofed.org/blog/2014/04/05/practice-of-separation-of-front-end-from-back-end/)
+* [淘宝：新版卖家中心 Bigpipe 实践](http://taobaofed.org/blog/2015/12/17/seller-bigpipe/)
+* [turbolink：现成的pjax解决方案](https://github.com/turbolinks/turbolinks)
+* [javascript MV*模式](http://wiki.jikexueyuan.com/project/javascript-design-patterns/mvc.html)
+* [现代前端技术解析](https://book.douban.com/subject/27021790/)
+
+
 ## 前端技术梳理
+### 提升开发效率
+* css转译：sass/Less/pass/postCSS  
+* css工具库：bootstrap css  
+* JS转译：babel  
+* JS工具库：jquery/undersocre/axios  
+* JS模块化：AMD/CMD/Commonjs/Seajs  
+* JS库管理工具：npm/Bower
+
+JS框架：
+* VUE
+* React
+* Backbone.js
+* KnockoutJS
+* AngularJS
+* EmberJS 
+
+### 代码规范
+* jslint  
+* csslint  
+
+### 部署
+* webpack  
+js压缩、js混淆、css压缩、图片压缩、icon sprite、cdn地址替换、sass预编译、postCSS编译...
+* gulp  
+* grunt  
+* fis3  
+* rollup   
