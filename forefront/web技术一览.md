@@ -245,20 +245,23 @@ public class ProductService {
 Ajax技术的诞生是前端发展的重要里程碑。  
 配合Google V8 JS引擎的问世，使得web页面可以仅靠JS调用http service完成所有页面的渲染工作。这便是SPA(Single Page Application)的概念，这里有[一个简单的SPA demo](https://github.com/chinaoarq/studio/tree/master/web%20common/spa_demo)。  
 
+从上文的demo可以看出SPA其实只有初始加载的时候生成一个document，往后的页面变化都是利用ajax请求server数据然后利用JS动态渲染DOM实现的，这也是SPA能够提供沉浸式体验的重要原因。  
+JS动态渲染DOM主要有两种方式：  
+
 ### SSR和CSR
 Server Side Rendering(eg. Jsp) VS Client Side Rendering(eg. Js build DOM)  
 * SSR充分利用服务器计算能力，在弱客户端环境下具有一定优势
 * CSR无需编码人员具有server知识，开发部署都不需要与后端协作
 
 ### Javascript Template Engines
-同Java Template Engines一样，目的相同，可以看做后端思想在前端的应用。常见模板举例：
+同Java Template Engines一样，前端也有模板引擎，可以看做后端思想在前端的应用。常见模板举例：
 * Mustache
 * Handlebars
 * Underscore
 * jTemplates
 
 ### 前端路由
-从上文的demo可以看出SPA其实只有初始加载的时候生成一个document，往后的页面变化都是利用ajax请求server数据然后利用JS动态渲染DOM实现的，这也是SPA能够提供沉浸式体验的重要原因。但现在有一个致命问题，在SPA中，从A页面跳到B页面时url不会变化。  
+但是SPA有一个致命问题，从A页面跳到B页面时url不会变化。  
 但我们需要url跟随页面一起变化，就像传统网站那样。因为url不随页面变化的方式是很不友好的，会导致用户没有办法使用浏览器的‘前进’‘后退’‘刷新’，也不能把某一个页面保存为‘书签’。
 
 解决这个问题有一下两种方式：
@@ -301,8 +304,9 @@ SPA的方式相当于把大量后端逻辑移到了前端，当前端逻辑变�
 ## 前后端分离探索
 
 ### 前后端代码结构图
-![图片没有加载出来](https://github.com/chinaoarq/blog/blob/dev/assets/struct.png?raw=true)
-[前后端协作方式的不断演变](https://github.com/lifesinger/blog/issues/184)
+![图片没有加载出来](https://github.com/chinaoarq/blog/blob/dev/assets/struct.png?raw=true)  
+
+[前后端协作方式的演变过程](https://github.com/lifesinger/blog/issues/184)  
 
 ### SPA式的分离
 * +对后端依赖最小，每个迭代只要api文档定好，就可以和后端同步开发
