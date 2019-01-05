@@ -240,6 +240,8 @@ public class ProductService {
 </html>
 ```
 
+常见的SpringMVC、Struts都是针对JAVA开发的第三方MVC框架。  
+
 
 ## Ajax及SPA的出现（后端技术思想在前端的应用）
 Ajax技术的诞生是前端发展的重要里程碑。  
