@@ -1,11 +1,15 @@
-### 浏览器原理与性能优化
+# 浏览器原理与性能优化
+
 讲到性能优化，躲不过要先了解一下[浏览器的工作原理](https://www.html5rocks.com/zh/tutorials/internals/howbrowserswork/)  
+
 然后推荐以下快餐资源学习：
+
 1. [桌面浏览器前端优化策略](https://my.oschina.net/zhangstephen/blog/1601382)
 2. [移动端浏览器前端优化策略](https://my.oschina.net/zhangstephen/blog/1601383)
 3. [CSS Selector Performance](https://smacss.com/book/selectors)
 
 系统学习资源推荐：
+
 1. [HTTP权威指南](https://book.douban.com/subject/10746113/)  
     这本书可以说是程序员的必读书之一了，HTTP协议应该是最广泛使用的应用层协议。
 2. [高性能网站建设指南](https://book.douban.com/subject/3132277/)  
