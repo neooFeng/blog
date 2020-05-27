@@ -1,6 +1,6 @@
 # Building Microservices 1: Service <!-- omit in toc -->
 
-最近读的基本关于如何构建微服务的书，打算用几篇文章分享一下。这篇作为系列的第一篇，主要分享以下几个topic：
+最近读了几本关于如何构建微服务的书，打算用几篇文章分享一下。这篇作为系列的第一篇，主要分享以下几个topic：
 
 - [How to Model Services](#how-to-model-services)
   - [What Makes a Good Services](#what-makes-a-good-services)
@@ -14,12 +14,12 @@
   - [Identifying microservice boundaries](#identifying-microservice-boundaries)
     - [Defining microservices](#defining-microservices)
     - [Validate the design](#validate-the-design)
-  - [Recommond Reading](#recommond-reading)
 - [Interservice Communication](#interservice-communication)
   - [Challenges](#challenges)
   - [Sync vs. Async](#sync-vs-async)
     - [Synchronous communication](#synchronous-communication)
     - [Asynchronous message passing](#asynchronous-message-passing)
+- [| Sequential Convoy | Process a set of related messages in a defined order, without blocking processing of other groups of messages. |](#sequential-convoy--process-a-set-of-related-messages-in-a-defined-order-without-blocking-processing-of-other-groups-of-messages)
   - [Distributed transactions](#distributed-transactions)
     - [CAP](#cap)
     - [ACID -> BASE](#acid---base)
@@ -124,7 +124,7 @@ From these scenarios, the development team identified the following relations.
 
 ![drone-delivery](./images/bms/drone-delivery.png)
 
-Non-functional requirements led the team to create two additional service:
+***Non-functional requirements*** led the team to create two additional service:
 
 - Ingestion service
 - Delivery History Service
@@ -138,14 +138,9 @@ Non-functional requirements led the team to create two additional service:
 - Services are not tightly coupled, and can evolve independently.
 - Your service boundaries will not create problems with data consistency or integrity. Sometimes it's important to maintain data consistency by putting functionality into a single microservice. That said, consider whether you really need strong consistency. There are strategies for addressing eventual consistency in a distributed system, and the benefits of decomposing services often outweigh the challenges of managing eventual consistency.
 
-### Recommond Reading
-
-- [Domain-Driven Design](https://martinfowler.com/bliki/BoundedContext.html)
-- [Guides from azure](https://docs.microsoft.com/en-us/azure/architecture/microservices/model/domain-analysis)
-
 ## Interservice Communication
 
-Communication between microservices must be efficient and robust.
+一个业务功能通常需要多个微服务配合完成，微服务之间的通信必须高效并且健壮。
 
 ### Challenges
 
@@ -205,9 +200,12 @@ Patterns:
 | Queue-Based Load | Leveling Use a queue that acts as a buffer between a task and a service that it invokes in order to smooth intermittent heavy loads. |
 | Scheduler Agent Supervisor | Coordinate a set of actions across a distributed set of services and other remote resources. |
 | Sequential Convoy | Process a set of related messages in a defined order, without blocking processing of other groups of messages. |
+---
 
-> Reading more...  
-> [click here](https://docs.microsoft.com/en-us/azure/architecture/patterns/category/messaging)
+<br>
+Drone Delivery Example
+
+![drone-delivery](./images/bms/drone-delivery.png)
 
 ### Distributed transactions
 
