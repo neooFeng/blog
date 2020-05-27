@@ -2,11 +2,6 @@
 
 最近读的基本关于如何构建微服务的书，打算用几篇文章分享一下。这篇作为系列的第一篇，主要分享以下几个topic：
 
-- How to Model Services
-- Interservice Communication
-- API Gateway
-- Naming Service
-
 - [How to Model Services](#how-to-model-services)
   - [What Makes a Good Services](#what-makes-a-good-services)
   - [Model Around Business Concepts](#model-around-business-concepts)
@@ -22,27 +17,26 @@
   - [Recommond Reading](#recommond-reading)
 - [Interservice Communication](#interservice-communication)
   - [Challenges](#challenges)
-  - [The Shared Database](#the-shared-database)
   - [Sync vs. Async](#sync-vs-async)
     - [Synchronous communication](#synchronous-communication)
     - [Asynchronous message passing](#asynchronous-message-passing)
   - [Distributed transactions](#distributed-transactions)
-  - [CAP](#cap)
-  - [ACID -> BASE](#acid---base)
+    - [CAP](#cap)
+    - [ACID -> BASE](#acid---base)
   - [Resilient Patterns](#resilient-patterns)
 - [API Gateway](#api-gateway)
   - [BFF](#bff)
   - [Load Balancing](#load-balancing)
   - [Cut Facing](#cut-facing)
   - [Nginx vs. Zuul](#nginx-vs-zuul)
-- [Naming Service](#naming-service)
+- [Name Service](#name-service)
   - [DNS](#dns)
   - [Dynamic Service Registries](#dynamic-service-registries)
 - [Summary](#summary)
   - [Principles of Microservices](#principles-of-microservices)
   - [When Shouldn’t You Use Microservices](#when-shouldnt-you-use-microservices)
   - [Parting Words](#parting-words)
-- [Recommend Reading](#recommend-reading)
+- [Recommended Reading](#recommended-reading)
 
 ## How to Model Services
 
@@ -160,8 +154,6 @@ Communication between microservices must be efficient and robust.
 - Distributed tracing
 - Service versioning
 
-### The Shared Database
-
 ### Sync vs. Async
 
 There are two basic messaging patterns that microservices can use to communicate with other microservices.
@@ -221,17 +213,17 @@ Patterns:
 
 A common challenge in microservices is correctly handling transactions that span multiple services. Often in this scenario, the success of a transaction is all or nothing — if one of the participating services fails, the entire transaction must fail.
 
-### CAP
+#### CAP
 
-- Consistency: I will get the same answer if I go to multiple nodes.
-- Availability: every request receives a response.
-- Partition tolerance: able to handle the fact that communication between systems is sometimes impossible.
+![cap](./images/bms/cap.png)
 
 在分布式的服务架构中，一致性（Consistency）、可用性（Availability）、分区容忍性（Partition Tolerance），在现实中不能都满足，最多只能满足其中两个，准确的说是AP 或 CP。
 
 > CA 在分布式系统中不存在，因为没有Partition Tolerance能力的系统不叫分布式系统。
 
-### ACID -> BASE
+#### ACID -> BASE
+
+强一致性的CP系统非常难实现，并且性能、可用性不高（因为要加锁来保证数据一致性），现实生活中，很少有需要强一致性的场景（比如买票这种交易场景，也不需要做到一手交钱一手交货），所以出现了 ACID 的一个变种 BASE。
 
 - Basic Availability：基本可用。这意味着，系统可以出现暂时不可用的状态，而后面会快速恢复。
 - Soft-state：软状态。为了提高性能，我们可以让服务暂时保存一些状态或数据，这些状态和数据不是强一致性的。
@@ -239,7 +231,7 @@ A common challenge in microservices is correctly handling transactions that span
 
 ![supervisor](./images/bms/supervisor.png)
 
-> 这里讲的分布式事物追求的都是最终一致性，相比严格一致性要简单非常多，实现最终一致性有一些常用方法，感兴趣的同学可以搜2PC（Two-phase Commit）、TCC(Try-Confirm-Cancel)、Write-ahead Logging
+实现最终一致性有一些常用方法，上图描述的是一种基于事物消息的事物补偿逻辑，感兴趣的同学还可以搜2PC（Two-phase Commit）、TCC(Try-Confirm-Cancel)、Write-ahead Logging。
 
 ### Resilient Patterns
 
@@ -267,7 +259,7 @@ A microservice architecture can be more resilient than a monolithic system, but 
 
 ### Nginx vs. Zuul
 
-## Naming Service
+## Name Service
 
 ### DNS
 
@@ -319,7 +311,7 @@ A microservice architecture can be more resilient than a monolithic system, but 
 - 不要盲目追求技术，脱离了实际业务需求
 - 构建分布式系统的过程中一定会犯错，降低损失的一个有效方式是每次只做一小步架构改动（evolutionary architecture)
 
-## Recommend Reading
+## Recommended Reading
 
 - [microservices -- martin fowler](https://martinfowler.com/articles/microservices.html)
 - [Azure Architecture Center](https://docs.microsoft.com/en-us/azure/architecture/)
