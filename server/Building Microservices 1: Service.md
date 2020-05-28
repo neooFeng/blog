@@ -25,13 +25,14 @@
     - [ACID -> BASE](#acid---base)
   - [Resilient Patterns](#resilient-patterns)
 - [API Gateway](#api-gateway)
-  - [BFF](#bff)
-  - [Load Balancing](#load-balancing)
-  - [Cut Facing](#cut-facing)
-  - [Nginx vs. Zuul](#nginx-vs-zuul)
-- [Name Service](#name-service)
-  - [DNS](#dns)
-  - [Dynamic Service Registries](#dynamic-service-registries)
+  - [Gateway Aggregation](#gateway-aggregation)
+  - [Gateway Offloading](#gateway-offloading)
+  - [Gateway Routing](#gateway-routing)
+    - [DNS](#dns)
+    - [Dynamic Service Registries](#dynamic-service-registries)
+  - [Example: Nginx](#example-nginx)
+  - [Example: Zuul](#example-zuul)
+  - [Issues and considerations](#issues-and-considerations)
 - [Summary](#summary)
   - [Principles of Microservices](#principles-of-microservices)
   - [When Shouldn’t You Use Microservices](#when-shouldnt-you-use-microservices)
@@ -140,7 +141,7 @@ From these scenarios, the development team identified the following relations.
 
 ## Interservice Communication
 
-一个业务功能通常需要多个微服务配合完成，微服务之间的通信必须高效并且健壮。
+在微服务架构中，一个业务功能通常需要多个微服务配合完成，微服务之间的通信必须高效并且健壮。
 
 ### Challenges
 
@@ -233,7 +234,7 @@ A common challenge in microservices is correctly handling transactions that span
 
 ### Resilient Patterns
 
-A microservice architecture can be more resilient than a monolithic system, but only if you understand and plan for failures in part of our system. Consider the patterns below:
+A microservice architecture can be more resilient than a monolithic system, but only if you understand and ***plan for failures*** in part of our system. Consider the patterns below:
 
 | name | how does it work? | description |
 | --- | --- | --- |
@@ -249,23 +250,196 @@ A microservice architecture can be more resilient than a monolithic system, but 
 
 ## API Gateway
 
-### BFF
+上面几部分介绍了如何定义各个微服务的边界，以及服务之间的调用方式选择。现在，我们面临一个新的问题：web浏览器或app应用如何访问这些微服务？
 
-### Load Balancing
+如果业务比较复杂并且服务拆分比较细的话，通常一个页面功能需要多个微服务配合完成，这时候如果让页面调用每一个service，会有以下几个问题：
 
-### Cut Facing
+- chatty，接口调用太频繁会增加server负担
+- 不能针对客户端返回不同数据集合，比如同样一个热销活动页面，小程序显示的页面元素可能要比pc浏览器少一些
+- 耦合，这种方式相当于把server实现在一定程度上暴露给了客户端，后面如果server要对服务进行升级，在兼容旧版本方面要更花费更多精力
+- service只能使用http，并且要处理跨域问题
 
-### Nginx vs. Zuul
+所以，通常我们会在app和微服务之间加一个layer解决以上问题，因为这个layer是所有服务的入口，所以我们把它叫做Gateway。
 
-## Name Service
+在实际应用场景中，app调用service时还需要解决一些其他通用问题，比如authentication, SSL termination, logging, rate limiting. 可以发现这些需求都是业务无关的，并且广泛存在于各个service，很适合采用 AOP 的思想来解决。不难想到，Gateway就是解决这些问题的最佳位置，从而避免在每个service实现一次。
 
-### DNS
+![gateway](./images/bms/gateway.png)
 
-### Dynamic Service Registries
+总的来说，Gateway实现以下几个功能：
+
+- Gateway Aggregation
+- Gateway Offloading
+- Gateway Routing
+
+### Gateway Aggregation
+
+Aggregation可以直接在Gateway做，比如Nginx中使用lua脚本就可以实现这个功能（下文有展示）。但我推荐把Aggregation的工作单独作为一个进程放到Gateway之后，具体做法可以参考Backends For Frontends这个设计模式，BFF最早由Sam Newman提出，具体工作方式如下：
+
+![bbf](./images/bms/bbf.jpg)
+
+> 详见[Pattern: Backends For Frontends](https://samnewman.io/patterns/architectural/bff/)
+
+### Gateway Offloading
+
+常见的适合offload到Gateway的功能有：
+
+- SSL termination
+- Authentication
+- IP whitelisting
+- Client rate limiting (throttling)
+- Logging and monitoring
+- Response caching
+- Web application firewall
+- GZIP compression
+- Servicing static content
+
+### Gateway Routing
+
+Gateway Routing包含两部分工作，1）service discovery 2）load balance。LB的实现主要是一些选择算法，比如round-robin, last-connection等，感兴趣的同学可以自己去了解下，这里主要讲的是service discovery，想要实现服务发现，首先要解决以下几个问题：
+
+1. 系统中有哪些service
+2. 这些service在什么地方
+3. 这些service是否可用
+4. service实例的动态增减如何被路由逻辑感知到
+
+下面介绍几种常见的service discovery方法。
+
+#### DNS
+
+DNS 技术足够common，并且一个域名可以对应多个ip，利用这个特性我们很简单的实现服务发现。缺点是 DNS 解析规则修改不方便，并且存在缓存，对解析规则的更新不能快速生效。不过这个问题可以通过引入一个 LB 解决，如下图：
+
+![service-discovery-dns](./images/bms/service-discovery-dns.png)
+
+#### Dynamic Service Registries
+
+为了解决DNS方案在动态更新方面的缺陷，业界出现了很多可选的系统，比如：
 
 - Zookeeper
 - Consul
 - Eureka
+
+他们大多数的工作原理都是提供一个服务注册仓库，并提供服务注册接口和服务查询接口。说起来简单，实际应用中，服务仓库是需要分布式部署的（不然就是单点问题），以提高系统的可用性（Availability），这又是一个分布式存储 CAP 之间博弈的难题，就不要想着自己实现了，如果有需要直接使用业界成熟方案就好。
+
+> 如果你想大概了解下分布式存储中保证数据一致性有多难，可以搜 Zab、Paxos、Raft、Gossip。  
+
+以上介绍的服务发现系统都是工作在TCP/IP第七层，还有工作在第四层的，比如大名鼎鼎的LVS，你知道4层LB和7层LB的区别吗？
+
+### Example: Nginx
+
+``` nginx
+upstream iis {
+    server  10.3.0.10    max_fails=3    fail_timeout=15s;
+    server  10.3.0.20    max_fails=3    fail_timeout=15s;
+    server  10.3.0.30    max_fails=3    fail_timeout=15s;
+}
+
+server {
+    listen 443 ssl;
+    server_name domain.com;
+    ssl_certificate /etc/nginx/ssl/domain.cer;
+    ssl_certificate_key /etc/nginx/ssl/domain.key;
+
+    gzip            on;
+    gzip_min_length 1000;
+    gzip_proxied    expired no-cache no-store private auth;
+    gzip_types      application/javascript text/css text/plain;
+
+    access_log /var/log/nginx/access.log log_format;
+
+    location / {
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Host $host;
+
+        proxy_pass http://iis;
+    }
+
+    location /qs/assets {
+        access_log off;
+        add_header Cache-Control public;
+        add_header Cache-Control  max-age=31536000;
+
+        root /qingshu/static/msite;
+    }
+
+    location /app1 {
+        deny 222.122.10.211;
+
+        proxy_pass http://10.0.3.10:80;
+    }
+
+    location /app2 {
+        limit_req zone=ipsms burst=1 nodelay;
+
+        proxy_pass http://10.0.3.20:80;
+    }
+
+    location /app3 {
+        proxy_pass http://10.0.3.30:80;
+    }
+
+    location = /batch {
+        content_by_lua '
+            ngx.req.read_body()
+
+            -- read json body content
+            local cjson = require "cjson"
+            local batch = cjson.decode(ngx.req.get_body_data())["batch"]
+
+            -- create capture_multi table
+            local requests = {}
+            for i, item in ipairs(batch) do
+              table.insert(requests, {item.relative_url, { method = ngx.HTTP_GET}})
+            end
+
+            -- execute batch requests in parallel
+            local results = {}
+            local resps = { ngx.location.capture_multi(requests) }
+            for i, res in ipairs(resps) do
+              table.insert(results, {status = res.status, body = cjson.decode(res.body), header = res.header})
+            end
+
+            ngx.say(cjson.encode({results = results}))
+        ';
+    }
+}
+```
+
+Nginx可谓家喻户晓，它成熟稳定、性能极高，并且可以使用lua脚本实现一些高级需求，应该没有哪家公司不在使用它。但是行业里还有另一类gateway产品是nginx无法取代的。这要先从nginx的缺点分析起，如果你所在的公司服务器集群有几十台机器，2台以上nginx，相信你会有一些感触：nginx的最大缺点就是***偏向运维属性***，对于擅长写代码解决问题的程序员并不友好，不方便用自动化的方式管理；不像Zuul等可编程网关那样可控。
+
+### Example: Zuul
+
+成熟的开源网关除了Zuul，还有Kong, Spring Clound Gateway等，Zuul是其中比较简单的，本文以Zuul为例，介绍可编程网关的实现。下图是Zuul2内部架构图，使用netty这种异步网络框架处理请求（zuul1使用的是servlet实现）。
+
+![zuul2](./images/bms/zuul2.png)
+
+通过上图可以看出zuul的实现逻辑还是比较简单的，核心流程基本以下几点：
+
+- 监听客户端的请求
+- 解析请求内容
+- 根据请求内容调用对应的下游服务
+- 接受下游服务返回的响应
+- 返回最终响应给客户端
+
+整个流程中可以插入多个自定义filter，对request/response做自定义处理，比如认证、限流、log、路由等，还可以结合上文提到的Hystrix等工具一起使用。下图是一个更加具体的实现：
+
+![gateway2](./images/bms/gateway2.png)
+
+> 在实践中，可编程网关和nginx可以一起使用。
+
+### Issues and considerations
+
+- The gateway service may introduce a single point of failure.
+- The gateway service may introduce a bottleneck.
+- Perform load testing against the gateway to ensure you don't introduce cascading failures for services.
+- Implement a resilient design, using techniques such as bulkheads, circuit breaking, retry, and timeouts.
+- Gateway routing is level 7. It can be based on IP, port, header, or URL.
+- Only offload features that are used by the entire application, such as security or data transfer.
+- Business logic should never be offloaded to the API gateway.
+- Instead of building aggregation into the gateway, consider placing an aggregation service behind the gateway.
+- If you need to track transactions, consider generating correlation IDs for logging purposes.
+- Monitor request metrics and response sizes.
 
 ## Summary
 
@@ -304,10 +478,12 @@ A microservice architecture can be more resilient than a monolithic system, but 
 
 ### Parting Words
 
-- 构建微服务的过程其实就是构建分布式系统的过程，学习范围不必拘泥与微服务
+- 构建微服务的过程其实就是构建分布式系统的过程，学习范围不必拘泥于微服务
+- 分布式系统非常复杂，构建过程中一定会犯错，降低损失的一个有效方式是每次只做一小步架构改动（evolutionary architecture)  
+  ![distribute-overview](./images/bms/distribute-overview.png)
 - 构建分布式系统时，业界已有很多pattern和工具，要善于利用
+  ![spring-cloud](./images/bms/spring-cloud.png)
 - 不要盲目追求技术，脱离了实际业务需求
-- 构建分布式系统的过程中一定会犯错，降低损失的一个有效方式是每次只做一小步架构改动（evolutionary architecture)
 
 ## Recommended Reading
 
