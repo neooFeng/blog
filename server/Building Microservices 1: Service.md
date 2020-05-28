@@ -19,7 +19,6 @@
   - [Sync vs. Async](#sync-vs-async)
     - [Synchronous communication](#synchronous-communication)
     - [Asynchronous message passing](#asynchronous-message-passing)
-- [| Sequential Convoy | Process a set of related messages in a defined order, without blocking processing of other groups of messages. |](#sequential-convoy--process-a-set-of-related-messages-in-a-defined-order-without-blocking-processing-of-other-groups-of-messages)
   - [Distributed transactions](#distributed-transactions)
     - [CAP](#cap)
     - [ACID -> BASE](#acid---base)
@@ -201,7 +200,6 @@ Patterns:
 | Queue-Based Load | Leveling Use a queue that acts as a buffer between a task and a service that it invokes in order to smooth intermittent heavy loads. |
 | Scheduler Agent Supervisor | Coordinate a set of actions across a distributed set of services and other remote resources. |
 | Sequential Convoy | Process a set of related messages in a defined order, without blocking processing of other groups of messages. |
----
 
 <br>
 Drone Delivery Example
