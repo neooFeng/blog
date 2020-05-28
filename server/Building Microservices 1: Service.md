@@ -479,9 +479,9 @@ Nginx可谓家喻户晓，它成熟稳定、性能极高，并且可以使用lua
 - 构建微服务的过程其实就是构建分布式系统的过程，学习范围不必拘泥于微服务
 - 分布式系统非常复杂，构建过程中一定会犯错，降低损失的一个有效方式是每次只做一小步架构改动（evolutionary architecture)  
   ![distribute-overview](./images/bms/distribute-overview.png)
-- 构建分布式系统时，业界已有很多pattern和工具，要善于利用
+- 构建分布式系统时，业界已有很多pattern和工具，要善于利用  
   ![spring-cloud](./images/bms/spring-cloud.png)
-- 不要盲目追求技术，脱离了实际业务需求
+- 不要盲目追求技术，适合的才是最好的
 
 ## Recommended Reading
 
