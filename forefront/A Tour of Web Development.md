@@ -41,7 +41,7 @@
 
 ### 示意图
 
-![客户端与服务器交互方式](images/bc.png)  
+![客户端与服务器交互方式](../_images/A Tour of Web Development_images/bc.png)  
 
 ### 推荐资料
 
@@ -202,7 +202,7 @@ Controller扮演什么角色呢？在软件开发领域有一句俗话：**“�
   
 ### 框架关系图
 
-![MVC](images/mvc.png)  
+![MVC](../_images/A Tour of Web Development_images/mvc.png)  
 
 从上面的Google结果图可以看出，如今已经找不到一个定式的MVC关系图，从[MVC被提出](http://wiki.jikexueyuan.com/project/javascript-design-patterns/mvc.html)在现在，在不同技术领域，都发展出了[适合各自场景的MVC](https://zh.wikipedia.org/wiki/MVC#%E5%AE%9E%E7%8E%B0)。  
 
@@ -344,7 +344,7 @@ SPA的方式相当于把大量后端逻辑移到了前端，当前端逻辑变�
 
 ### 前后端代码结构图
 
-![前后端结构图](images/struct.png)
+![前后端结构图](../_images/A Tour of Web Development_images/struct.png)
 [前后端协作方式的不断演变](https://github.com/lifesinger/blog/issues/184)
 
 ### SPA式的分离
