@@ -43,25 +43,25 @@ People in the software world have long argued about a definition of architecture
 
 ### N-layer
 
-![n-layer](images/n_layer.png)
+![n-layer](../images/ita/n_layer.png)
 
 Advantage：reduce the scope of my attention
 
 As an application grows, each layer can get sufficiently complex on its own that you need to modularize further.
 
-![n-layer-2](images/n_layer2.png)
+![n-layer-2](../images/ita/n_layer2.png)
 
 ### Micro Services
 
 #### Example from Uber
 
-![monolithic](images/monolithic.png)
+![monolithic](../images/ita/monolithic.png)
 
 after broke monolith into micro services
 
-![ms](images/microservices-architecture.png)
+![ms](../images/ita/microservices-architecture.png)
 
-![ms-feature](images/intro-microservices.png)
+![ms-feature](../images/ita/intro-microservices.png)
 
 #### Definition
 
@@ -77,7 +77,7 @@ But as a common denominator, SOA means that you structure your application by de
 
 #### opinion 1:  "SOA is about how to achieve integration often to aging complex back end systems in order to expose services."
 
-![soa_opinion1](images/soa1.png)
+![soa_opinion1](../images/ita/soa1.png)
 
 ##### Background
 
@@ -87,37 +87,38 @@ Before SOA emerged in the late 1990s, connecting an application to data or funct
 
 ###### Orchestration(centralized conductor)
 
-![soa_intergration1](images/soa_integration1.png)
+![soa_intergration1](../images/ita/soa_integration1.png)
 
 ###### Choreography(inter-service communication)
 
-![soa_intergration2](images/soa_integration2.png)
+![soa_intergration2](../images/ita/soa_integration2.png)
 
 ###### SOA relies on both service orchestration and service choreography to process business requests.
 
-![soa_intergration3](images/soa_integration3.png)
+![soa_intergration3](../images/ita/soa_integration3.png)
 
 ##### How integration hub works
 
 ###### mediation and routing
 
-![soa_hub1](images/soa_inter_hub_1.png)
+![soa_hub1](../images/ita/soa_inter_hub_1.png)
 
 ###### message enhancement
 
-![soa_hub2](images/soa_inter_hub_2.png)
+
+![soa_hub2](../images/ita/soa_inter_hub_2.png)
 
 ###### message transformation
 
-![soa_hub3](images/soa_inter_hub_3.png)
+![soa_hub3](../images/ita/soa_inter_hub_3.png)
 
 ###### protocol transformation
 
-![soa_hub4](images/soa_inter_hub_4.png)
+![soa_hub4](../images/ita/soa_inter_hub_4.png)
 
 #### opinion 2:  "SOA is about re-factoring your IT landscape into components that better align with the business needs and expose the services that it requires."
 
-![soa_2](images/soa2.png)
+![soa_2](../images/ita/soa2.png)
 
 In this case, SOA is focus on realignement to the business needs. The servcie component looks more like applications, and we may consider microservices as "more granular SOA", or even "SOA done right".
 

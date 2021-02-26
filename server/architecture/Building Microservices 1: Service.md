@@ -53,7 +53,7 @@ Experience has shown us that interfaces structured around business-bounded conte
 
 Domain-driven design (DDD) provides a framework that can get you most of the way to a set of well-designed microservices. DDD has two distinct phases, ***strategic*** and ***tactical***. In strategic DDD, you are defining the large-scale structure of the system. Strategic DDD helps to ensure that your architecture remains focused on business capabilities. Tactical DDD provides a set of design patterns that you can use to create the domain model. These patterns include entities, aggregates, and domain services. These tactical patterns will help you to design microservices that are both loosely coupled and cohesive.
 
-![ddd-process](./images/bms/ddd-process.png)
+![ddd-process](../images/bms/ddd-process.png)
 
 ### Scenario: Drone delivery
 
@@ -70,7 +70,7 @@ This scenario involves a fairly complicated domain. Some of the business concern
 
 After some initial domain analysis, the Fabrikam team came up with a rough sketch that depicts the Drone Delivery domain.
 
-![ddd1](./images/bms/ddd1.svg)
+![ddd1](../images/bms/ddd1.svg)
 
 - **Shipping** is placed in the center of the diagram, because it's core to the business. Everything else in the diagram exists to enable this functionality.
 - **Drone management** is also core to the business. Functionality that is closely related to drone management includes drone repair and using predictive analysis to predict when drones need servicing and maintenance.
@@ -84,7 +84,7 @@ After some initial domain analysis, the Fabrikam team came up with a rough sketc
 
 A bounded context is simply the boundary within a domain where a particular domain model applies. Looking at the previous diagram, we can group functionality according to whether various functions will share a single domain model.
 
-![ddd2](./images/bms/ddd2.svg)
+![ddd2](../images/bms/ddd2.svg)
 
 ### Tactical DDD
 
@@ -92,7 +92,7 @@ The tactical patterns are applied within a single bounded context. In a microser
 
 #### Overview of the tactical patterns
 
-![ddd-patterns](./images/bms/ddd-patterns.png)
+![ddd-patterns](../images/bms/ddd-patterns.png)
 
 - **Entities.** An entity is an object with a unique identity that persists over time. For example, in a banking application, customers and accounts would be entities.
 - **Value objects.** Typical examples of value objects include colors, dates and times, and currency values.
@@ -116,13 +116,13 @@ We start with the scenarios that the **Shipping bounded context** must handle.
 
 From these scenarios, the development team identified the following relations.
 
-![ddd-patterns](./images/bms/drone-ddd.png)
+![ddd-patterns](../images/bms/drone-ddd.png)
 
 ### Identifying microservice boundaries
 
 #### Defining microservices
 
-![drone-delivery](./images/bms/drone-delivery.png)
+![drone-delivery](../images/bms/drone-delivery.png)
 
 ***Non-functional requirements*** led the team to create two additional service:
 
@@ -204,7 +204,7 @@ Messaging Patterns:
 <br>
 Drone Delivery Example
 
-![drone-delivery](./images/bms/drone-delivery.png)
+![drone-delivery](../images/bms/drone-delivery.png)
 
 ### Distributed transactions
 
@@ -212,7 +212,7 @@ A common challenge in microservices is correctly handling transactions that span
 
 #### CAP
 
-![cap](./images/bms/cap.png)
+![cap](../images/bms/cap.png)
 
 在分布式的服务架构中，一致性（Consistency）、可用性（Availability）、分区容忍性（Partition Tolerance），在现实中不能都满足，最多只能满足其中两个，准确的说是AP 或 CP。
 
@@ -226,7 +226,7 @@ A common challenge in microservices is correctly handling transactions that span
 - Soft-state：软状态。为了提高性能，我们可以让服务暂时保存一些状态或数据，这些状态和数据不是强一致性的。
 - Eventual Consistency：最终一致性，系统在一个短暂的时间段内是不一致的，但最终整个系统看到的数据是一致的。
 
-![supervisor](./images/bms/supervisor.png)
+![supervisor](../images/bms/supervisor.png)
 
 实现最终一致性有一些常用方法，上图描述的是一种基于事物消息的事物补偿逻辑，感兴趣的同学还可以搜2PC（Two-phase Commit）、TCC(Try-Confirm-Cancel)、Write-ahead Logging。
 
@@ -239,7 +239,7 @@ A microservice architecture can be more resilient than a monolithic system, but 
 | Retry | repeats failed executions | Many faults are transient and may self-correct after a short delay. |
 | Timeout | limits duration of execution | Beyond a certain wait interval, a successful result is unlikely.|
 | Circuit Breaker | temporary blocks possible failures | When a system is seriously struggling, failing fast is better than making clients wait. |
-| Bulkhead | limits resources | Resources are isolated into pools so that if one fails, the others will continue working.<br>  Ex: Allow 5 concurrent calls at a time, or allow use 50% cpu.<br>  Timeouts and circuit breakers help you free up resources when they are becoming constrained, but bulkheads can ensure they don’t become constrained in the first place.<br> ![bulkheads](./images/bms/bulkheads.png) |
+| Bulkhead | limits resources | Resources are isolated into pools so that if one fails, the others will continue working.<br>  Ex: Allow 5 concurrent calls at a time, or allow use 50% cpu.<br>  Timeouts and circuit breakers help you free up resources when they are becoming constrained, but bulkheads can ensure they don’t become constrained in the first place.<br> ![bulkheads](../images/bms/bulkheads.png) |
 | Rate Limiter | limits executions/period | Limit the rate of incoming requests. Ex: Allow 5 calls every 2 second. |
 | Cache | memorizes a successful result | Some proportion of requests may be similar. |
 | Isolation | use async messaging | The more one service depends on another being up, the more the health of one impacts the ability of the other to do its job. If we can use integration techniques that allow a downstream server to be offline, upstream services are less likely to be affected by outages, planned or unplanned. |
@@ -261,7 +261,7 @@ A microservice architecture can be more resilient than a monolithic system, but 
 
 在实际应用场景中，app调用service时还需要解决一些其他通用问题，比如authentication, SSL termination, logging, rate limiting. 可以发现这些需求都是业务无关的，并且广泛存在于各个service，很适合采用 AOP 的思想来解决。不难想到，Gateway就是解决这些问题的最佳位置，从而避免在每个service实现一次。
 
-![gateway](./images/bms/gateway.png)
+![gateway](../images/bms/gateway.png)
 
 总的来说，Gateway实现以下几个功能：
 
@@ -273,7 +273,7 @@ A microservice architecture can be more resilient than a monolithic system, but 
 
 Aggregation可以直接在Gateway做，比如Nginx中使用lua脚本就可以实现这个功能（下文有展示）。但我推荐把Aggregation的工作单独作为一个进程放到Gateway之后，具体做法可以参考Backends For Frontends这个设计模式，BFF最早由Sam Newman提出，具体工作方式如下：
 
-![bbf](./images/bms/bbf.jpg)
+![bbf](../images/bms/bbf.jpg)
 
 > 详见[Pattern: Backends For Frontends](https://samnewman.io/patterns/architectural/bff/)
 
@@ -306,7 +306,7 @@ Gateway Routing包含两部分工作，1）service discovery 2）load balance。
 
 DNS 技术足够common，并且一个域名可以对应多个ip，利用这个特性我们很简单的实现服务发现。缺点是 DNS 解析规则修改不方便，并且存在缓存，对解析规则的更新不能快速生效。不过这个问题可以通过引入一个 LB 解决，如下图：
 
-![service-discovery-dns](./images/bms/service-discovery-dns.png)
+![service-discovery-dns](../images/bms/service-discovery-dns.png)
 
 #### Dynamic Service Registries
 
@@ -410,7 +410,7 @@ Nginx可谓家喻户晓，它成熟稳定、性能极高，并且可以使用lua
 
 成熟的开源网关除了Zuul，还有Kong, Spring Clound Gateway等，Zuul是其中比较简单的，本文以Zuul为例，介绍可编程网关的实现。下图是Zuul2内部架构图，使用netty这种异步网络框架处理请求（zuul1使用的是servlet实现）。
 
-![zuul2](./images/bms/zuul2.png)
+![zuul2](../images/bms/zuul2.png)
 
 通过上图可以看出zuul的实现逻辑还是比较简单的，核心流程基本以下几点：
 
@@ -422,7 +422,7 @@ Nginx可谓家喻户晓，它成熟稳定、性能极高，并且可以使用lua
 
 整个流程中可以插入多个自定义filter，对request/response做自定义处理，比如认证、限流、log、路由等，还可以结合上文提到的Hystrix等工具一起使用。下图是一个更加具体的实现：
 
-![gateway2](./images/bms/gateway2.png)
+![gateway2](../images/bms/gateway2.png)
 
 > 在实践中，可编程网关和nginx可以一起使用。
 
@@ -443,7 +443,7 @@ Nginx可谓家喻户晓，它成熟稳定、性能极高，并且可以使用lua
 
 ### Principles of Microservices
 
-![principles](./images/bms/principles.jpg)
+![principles](../images/bms/principles.jpg)
 
 - Model Around Business Concepts  
   Use ***bounded contexts*** to define potential domain boundaries.
@@ -478,9 +478,9 @@ Nginx可谓家喻户晓，它成熟稳定、性能极高，并且可以使用lua
 
 - 构建微服务的过程其实就是构建分布式系统的过程，学习范围不必拘泥于微服务
 - 分布式系统非常复杂，构建过程中一定会犯错，降低损失的一个有效方式是每次只做一小步架构改动（evolutionary architecture)  
-  ![distribute-overview](./images/bms/distribute-overview.png)
+  ![distribute-overview](../images/bms/distribute-overview.png)
 - 构建分布式系统时，业界已有很多pattern和工具，要善于利用  
-  ![spring-cloud](./images/bms/spring-cloud.png)
+  ![spring-cloud](../images/bms/spring-cloud.png)
 - 不要盲目追求技术，适合的才是最好的
 
 ## Recommended Reading
