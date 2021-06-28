@@ -1,10 +1,15 @@
 # Unit test best practice
 
-## good unit test
+## readable
+### method naming convintion
+
+### AAA pattern
+
+## assert state, assert call ? use mock or not ?
+用degree centerManager.addCenter(center)做例子讲解
 
 
-## should avoid in action
-
+## database test
 
 ## writing testable code
 
@@ -12,5 +17,7 @@
 ## Java unit test framework
 
 
-## example
-
+## resources
+1. unit test: practice, princeple
+2. spring test framework
+3. google doc
